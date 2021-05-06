@@ -4,6 +4,7 @@ from sklearn.preprocessing import PolynomialFeatures
 from sklearn.pipeline import make_pipeline
 from sklearn import svm
 import pandas as pd
+from sklearn import linear_model
 
 """
 Building the data table
@@ -28,9 +29,8 @@ data = [
 
 column =  ["On/Off", "Temp","Wind Speed", "Humidity"]
 data = pd.DataFrame(data,columns =column)
-print(data)
 print(" ")
-
+print(data)
 
 """ 
 Research Quesiton #1:
@@ -41,20 +41,42 @@ xData = data[["Temp", "Wind Speed"]]
 yData = data["Humidity"]
 X_train, X_test, Y_train, Y_test = train_test_split(xData,  yData,test_size=0.3,random_state=0)
 
-model = make_pipeline(PolynomialFeatures(2), Ridge())
-
+model = linear_model.LinearRegression()
 model.fit(X_train, Y_train)
+print('Res:', model.score(X_test, Y_test))
 
-print(model.score(X_test, Y_test))
+model = make_pipeline(PolynomialFeatures(2), Ridge())
+model.fit(X_train, Y_train)
+print('Res:', model.score(X_test, Y_test))
+
+model = make_pipeline(PolynomialFeatures(3), Ridge())
+model.fit(X_train, Y_train)
+print('Res:', model.score(X_test, Y_test))
 
 """
 Research Question #2:
 Classifying between whether the machine was turned on or off based on the humidity, temperature, and wind speed
 """
+xData = data[["Temp", "Wind Speed"]]
+yData = data["On/Off"]
+X_train, X_test, Y_train, Y_test = train_test_split(xData,  yData,test_size=0.3,random_state=0)
+
+recommendation_model = svm.SVC()
+recommendation_model.fit(xData, yData)
+print('Res:', recommendation_model.score(X_test, Y_test))
+
+xData = data[["Wind Speed","Humidity"]]
+yData = data["On/Off"]
+X_train, X_test, Y_train, Y_test = train_test_split(xData,  yData,test_size=0.3,random_state=0)
+
+recommendation_model = svm.SVC()
+recommendation_model.fit(xData, yData)
+print('Res:', recommendation_model.score(X_test, Y_test))
+
 xData = data[["Temp", "Wind Speed","Humidity"]]
 yData = data["On/Off"]
 X_train, X_test, Y_train, Y_test = train_test_split(xData,  yData,test_size=0.3,random_state=0)
 
 recommendation_model = svm.SVC()
 recommendation_model.fit(xData, yData)
-print(recommendation_model.score(X_test, Y_test))
+print('Res:', recommendation_model.score(X_test, Y_test))
